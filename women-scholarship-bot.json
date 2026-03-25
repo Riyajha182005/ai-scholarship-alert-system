@@ -1,0 +1,160 @@
+{
+  "name": "women-scholarship-bot",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "@Women_Scholarship_Hub",
+        "text": "=🎓 Scholarship Alert  \n{{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        176
+      ],
+      "id": "91c0ee0a-867e-4269-8858-8b0673a22440",
+      "name": "Send a text message",
+      "webhookId": "af8e2a6d-355c-4171-8a14-95488490ca0b",
+      "credentials": {
+        "telegramApi": {
+          "id": "TQqCIQ9XPQ628UMF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "1. connect the bot to the channel\n2.fetch scholarship related women \n3. send telegram message to the channel "
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "ecf22acd-dc90-415d-ac74-bb51cf524e76",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            },
+            {
+              "mode": "everyHour",
+              "minute": 30
+            }
+          ]
+        },
+        "feedUrl": "https://news.google.com/rss/search?q=scholarships+for+women+India"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        176
+      ],
+      "id": "456a295b-201f-43eb-8a52-a4456bf3f048",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant that formats scholarship alerts.\n\nConvert this into clean format:\n\n- Title\n- Eligibility (if possible)\n- Short description\n\nINPUT:\nTitle:{{ $json.title }}\nDescription: {{ $json.contentSnippet }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -32,
+        176
+      ],
+      "id": "53897cd2-6d34-4c7f-864d-15eb86f2cb02",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        416
+      ],
+      "id": "68fad747-7c60-4dfe-abaa-0f2e058f6899",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "cynDr7g32VCQ8MDv",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "3cb72d1c-2526-43a7-a4f0-e456bf49368d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8145a12c3205e1b545f7bbe91c0e51928dfd31a3a3fca812c3b362ed5cc241da"
+  },
+  "id": "qlvh1ipNcNWxFwca",
+  "tags": []
+}
