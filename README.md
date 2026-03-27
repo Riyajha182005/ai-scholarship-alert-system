@@ -4,7 +4,7 @@
 
 This project is an AI-powered automation system that fetches real-time scholarship opportunities and shares them in a Telegram channel.
 
-It is designed to help students—especially women—discover opportunities easily without manual searching.
+It is designed to help students especially women discover opportunities easily without manual searching.
 
 ---
 
